@@ -31,3 +31,8 @@ Game Structure
     * Attack: Reduces the opponent's health by a set amount.
     * Defend: Reduces incoming damage for the next opponent's turn.
     * Special Move: Powerful action with cooldown or heal
+    * 
+
+
+
+
