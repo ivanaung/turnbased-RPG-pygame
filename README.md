@@ -10,18 +10,21 @@ Features
   
 Installation
 1. Ensure Python 3.x is installed on your computer.
-2. Install Pygame by running:
-3.   pip install pygame4.   
-5. Clone this repository or download the project files.
+2. Install visual code and open folder in VS Code
+3. Install Pygame by running in visual code terminal:
+4.   pip install pygame
+5.   pip install pygame-menu
+6. Clone this repository or download the project files.
+
+![image](https://github.com/user-attachments/assets/b9abcaf6-a84b-49cb-9b89-8840d4740ec5)
+
    
 How to Play
 1. Start the Game: Run the main.py script to start the game:
 2.    python main.py
      
 4. Game Controls:
-    * Press SPACE to take an action during your turn.
-    * Use Arrow keys or other designated keys for different moves.
-    * Usse Mouse to control attack or defence
+    * Usse Mouse to control attack or defence      
       
 5. Objective: Reduce your opponent's health to zero before yours runs out to win the match.
 Game Structure
@@ -31,7 +34,7 @@ Game Structure
     * Attack: Reduces the opponent's health by a set amount.
     * Defend: Reduces incoming damage for the next opponent's turn.
     * Special Move: Powerful action with cooldown or heal
-    * 
+      
 
 
 
