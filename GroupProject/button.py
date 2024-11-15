@@ -10,31 +10,31 @@ GREEN = (0,128,128)
 DARK_GREN = (0,102,128)
 RED = (200,20,0)
 DARK_RED= (136,20,0)
+GRAY =(100,100,100)
 
 
 class Button:
-    def __init__(self, x, y, width, height, text, color=BLUE, hover_color=DARK_BLUE):
+    def __init__(self, x, y, width, height, text, active, color=RED, hover_color=DARK_RED):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text       
         self.current_color = color
         self.font = pygame.font.SysFont("Arial",14)
-        if(text == "Heal"):
-            self.color = GREEN
-            self.hover_color = DARK_GREN
-        elif(text == "Exit" or text == "Attack"):
-            self.color = RED
-            self.hover_color = DARK_RED
-        else:
-            self.color = color
-            self.hover_color = hover_color
+        self.active = active
+        self.color = color
+        self.hover_color = hover_color
+        
 
     def draw(self, screen):
         # Change color when hovered
-        mouse_pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(mouse_pos):
-            self.current_color = self.hover_color
-        else:
-            self.current_color = self.color
+        if self.active:
+            mouse_pos = pygame.mouse.get_pos()
+            if self.rect.collidepoint(mouse_pos):
+                self.current_color = self.hover_color
+            else:
+                self.current_color = self.color
+        else:           
+            self.current_color = GRAY
+            self.hover_color = GRAY     
 
         pygame.draw.rect(screen, self.current_color, self.rect,border_radius=10)
         text_surface = self.font.render(self.text, True, WHITE)

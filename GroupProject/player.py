@@ -10,6 +10,7 @@ STAR_COLOR = (255, 255, 255)  # White for stars
 OUTLINE_COLOR = (173, 255, 47)  # Light green for the outline     
 GRAY = (200, 200, 200)
 GREEN = (0,255,0)
+RED = (200, 20, 20)
 
 class Player:
     def __init__(self, name, hero_type, position=(0, 0), hp=100, exp=0, rank=3):
@@ -30,21 +31,23 @@ class Player:
          # Load hero image based on hero type
         self.image = self.load_hero_image(hero_type)
         self.rect = self.image.get_rect(topleft=self.position) if self.image else None
-        self.ackbtn = Button(position[0] + (self.rect.width -20),position[1]+60,60,20,"Attack")
+        self.ackbtn1 = Button(position[0] + (self.rect.width -20),position[1]+20,80,20,"Attack AI 1",True)
+        self.ackbtn2 = Button(position[0] + (self.rect.width -20),position[1]+50,80,20,"Attack AI 2",True)
+        self.ackbtn3 = Button(position[0] + (self.rect.width -20),position[1]+80,80,20,"Attack AI 3",True)
        
 
     def load_hero_image(self, hero_type):
         """Load an image based on the hero type."""
         hero_tanker ={
-            1 : "./hero/hero1.png",
-            2 : "./hero/hero2.png",
-            3 : "./hero/hero3.png",
+            1 : "GroupProject/hero/hero1.png",
+            2 : "GroupProject/hero/hero2.png",
+            3 : "GroupProject/hero/hero3.png",
 
         }
         hero_warrior = {          
-            1 : "./hero/hero4.png",
-            2 : "./hero/hero5.png",
-            3 : "./hero/hero6.png",           
+            1 : "GroupProject/hero/hero4.png",
+            2 : "GroupProject/hero/hero5.png",
+            3 : "GroupProject/hero/hero6.png",           
         }
 
         try:
@@ -72,12 +75,15 @@ class Player:
             text_name= self.font.render(self.name + " -[" + self.enemy_type_name + "]", True, (0,0,0))
             screen.blit(text_name, (self.position[0]+2,self.position[1]+self.image.get_height()+15))
             if(self.health<=0):
-                self.image = pygame.image.load("./hero/herorip.png")
+                self.image = pygame.image.load("GroupProject/hero/herorip.png")
                 self.die = True
             else:
                 self.draw_health_bar(screen)
                 self.draw_rank_arrow_bar(screen,self.rank)
-                self.ackbtn.draw(screen)
+                self.ackbtn1.draw(screen)
+                self.ackbtn2.draw(screen)
+                self.ackbtn3.draw(screen)
+
             screen.blit(self.image, self.position)     
 
     def draw_health_bar(self, screen):
@@ -93,7 +99,7 @@ class Player:
         #border
         pygame.draw.rect(screen, (100, 100,100), (bar_x+1, bar_y+1, bar_width+2, bar_height+3))  # Red for empty bar
         # Draw the background (empty bar)
-        pygame.draw.rect(screen, GRAY, (bar_x, bar_y, bar_width, bar_height))  # Red for empty bar
+        pygame.draw.rect(screen, RED , (bar_x, bar_y, bar_width, bar_height))  # Red for empty bar
         # Draw the current health (filled bar)
         pygame.draw.rect(screen, GREEN, (bar_x, bar_y, current_health_width, bar_height))  # Green for filled bar
 

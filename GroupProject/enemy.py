@@ -11,9 +11,10 @@ STAR_COLOR = (255, 255, 255)  # White for stars
 OUTLINE_COLOR = (173, 255, 47)  # Light green for the outline  
 GRAY = (200, 200, 200)
 GREEN = (0,255,0)
+RED = (200, 20, 20)
 
 class Enemy:
-    def __init__(self, name, enemy_type, position=(0, 0), hp=100, exp=0, rank=0):
+    def __init__(self,index, name, enemy_type, position=(0, 0), hp=100, exp=0, rank=0):
         self.font = pygame.font.SysFont("Arial",12)
         self.font.set_bold(True)
         self.name = name
@@ -27,6 +28,7 @@ class Enemy:
         self.atkpoint = 0
         self.defpoint = 0 
         self.die = False
+        self.ai_index = index
 
         # Load hero image based on hero type
         self.image = self.load_enemy_image(enemy_type)
@@ -37,17 +39,19 @@ class Enemy:
     def load_enemy_image(self, enemy_type):
         """Load an image based on the hero type."""
         enemy_tanker ={
-            1 : "./enemy/enemy1.png",
-            2 : "./enemy/enemy2.png",
-            3 : "./enemy/enemy3.png",
+            1 : "GroupProject/enemy/enemy1.png",
+            2 : "GroupProject/enemy/enemy2.png",
+            3 : "GroupProject/enemy/enemy3.png",
 
         }
         enemy_warrior = {          
-            1 : "./enemy/enemy4.png",
-            2 : "./enemy/enemy5.png",
-            3 : "./enemy/enemy6.png",           
+            1 : "GroupProject/enemy/enemy4.png",
+            2 : "GroupProject/enemy/enemy5.png",
+            3 : "GroupProject/enemy/enemy6.png",           
         }
         
+   
+
         try:
             if(enemy_type==1):   #Tanker 
                 imagefile = enemy_tanker.get(random.randint(1,3), "default.png")
@@ -72,7 +76,7 @@ class Enemy:
             text_name= self.font.render(self.name + " -[" + self.enemy_type_name + "]" , True, (0,0,0))
             screen.blit(text_name, (self.position[0]+2,self.position[1]+self.image.get_height()+15))
             if(self.health<=0):
-                self.image = pygame.image.load("./enemy/enemyrip.png")
+                self.image = pygame.image.load("GroupProject/enemy/enemyrip.png")
                 self.die = True
             else:
                 self.draw_health_bar(screen)
@@ -92,7 +96,7 @@ class Enemy:
         #border
         pygame.draw.rect(screen, (100, 100,100), (bar_x+1, bar_y+1, bar_width+2, bar_height+3))  # Red for empty bar
         # Draw the background (empty bar)
-        pygame.draw.rect(screen, GRAY, (bar_x, bar_y, bar_width, bar_height))  # Red for empty bar
+        pygame.draw.rect(screen, RED, (bar_x, bar_y, bar_width, bar_height))  # Red for empty bar
         # Draw the current health (filled bar)
         pygame.draw.rect(screen, GREEN, (bar_x, bar_y, current_health_width, bar_height))  # Green for filled bar
 

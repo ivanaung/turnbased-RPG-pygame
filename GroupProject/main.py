@@ -7,7 +7,6 @@ from player import *
 from enemy import *
 from button import *
 
-
 pygame.mixer.init()
 pygame.init()
 
@@ -33,16 +32,17 @@ GRAY = (20, 20, 20)
 BLUE = (20, 20, 200)
 RED = (200, 20, 20)
 DARK_BLUE = (0, 143, 250)
-GREEN = (0,128,128)
+GREEN = (10,150,128)
+LIGHT_GREEN =(100,250.150)
 
-intro_music = pygame.mixer.Sound("./sound/intro.mp3")
-gameplay_music = pygame.mixer.Sound("./sound/game_play.mp3")
-mouse_click = pygame.mixer.Sound("./sound/mouseclick.mp3")
-helth_update = pygame.mixer.Sound("./sound/update.mp3")
-die = pygame.mixer.Sound("./sound/die.wav")
-win = pygame.mixer.Sound("./sound/win.wav")
-lose = pygame.mixer.Sound("./sound/lose.wav")
-promoted = pygame.mixer.Sound("./sound/promoted.mp3")
+intro_music = pygame.mixer.Sound("GroupProject/sound/intro.mp3")
+gameplay_music = pygame.mixer.Sound("GroupProject/sound/game_play.mp3")
+mouse_click = pygame.mixer.Sound("GroupProject/sound/mouseclick.mp3")
+helth_update = pygame.mixer.Sound("GroupProject/sound/update.mp3")
+die = pygame.mixer.Sound("GroupProject/sound/die.wav")
+win = pygame.mixer.Sound("GroupProject/sound/win.wav")
+lose = pygame.mixer.Sound("GroupProject/sound/lose.wav")
+promoted = pygame.mixer.Sound("GroupProject/sound/promoted.mp3")
 
 #set the game area
 surface = pygame.display.set_mode((screen_width, screen_height))
@@ -60,16 +60,18 @@ turnfont = pygame.font.SysFont("Times New Roman",25)
 turnfont.set_bold(True)
 
 
-background_image = pygame.image.load('./menu_bg.png')
+background_image = pygame.image.load('GroupProject/menu_bg.png')
 background_image = pygame.transform.scale(background_image,(screen_width,screen_height))
 
-background_fight1 = pygame.image.load('./level/level1bg.png')
+background_fight1 = pygame.image.load('GroupProject/level/level1bg.png')
 background_fight1 = pygame.transform.scale(background_fight1,(int(screen_width * 0.8),screen_height))
 
 def start_attack(attacker,target,game_log):
      #game_log.add_log("Attacker Attack Point :" + str(attacker.atkpoint))
      #game_log.add_log("Target Defence Point :" + str(attacker.defpoint))
+     game_log.add_log(attacker.name +"  attack to "+ target.name)
      if(target.die==False):
+        
         Damage= (attacker.atkpoint - target.defpoint) + (random.randint(5,10))  #Damage point calculate          
        
         if(Damage > 10):
@@ -90,21 +92,23 @@ def start_attack(attacker,target,game_log):
      
         if(attacker.experience >100):
             attacker.rank +=1            
+            attacker.defpoint +=2                                                   #Increase defence point based on rank
             attacker.experience = 0
             play_short_sound(promoted)
+            game_log.add_log(attacker.name + " Promoted Rank!")
     
      
 def start_game():
     play_sound(gameplay_music)
-    player1 = Player(name="Hero1", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+100,screen_height-180),rank=0)
+    player1 = Player(name="Hero1", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+100,screen_height-520),rank=0)
     player2 = Player(name="Hero2", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+50,screen_height-350),rank=0)
-    player3 = Player(name="Hero3", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+100,screen_height-520),rank=0)
+    player3 = Player(name="Hero3", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+100,screen_height-180),rank=0)
 
     ainameArray = []
     ainameArray = generate_enemy_name(3)
-    enemy1 = Enemy(name=ainameArray[0], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-180),rank=0)
-    enemy2 = Enemy(name=ainameArray[1], enemy_type=random.randint(1,2), position=(int(screen_width)-150,screen_height-350),rank=0)
-    enemy3 = Enemy(name=ainameArray[2], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-520),rank=0)
+    enemy1 = Enemy(1,name=ainameArray[0], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-520),rank=0)
+    enemy2 = Enemy(2,name=ainameArray[1], enemy_type=random.randint(1,2), position=(int(screen_width)-150,screen_height-350),rank=0)
+    enemy3 = Enemy(3,name=ainameArray[2], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-180),rank=0)
 
     enemys = [enemy1,enemy2,enemy3]   
     players = [player1,player2,player3] 
@@ -113,8 +117,8 @@ def start_game():
     aiturn = False
     running = True
     clock = pygame.time.Clock()    
-    restart_button = Button(10,int(screen_height-30), 60, 20,"Restart")
-    exit_button = Button(80,int(screen_height-30), 60, 20,"Exit")
+    restart_button = Button(10,int(screen_height-30), 60, 20,"Restart",True,BLUE,DARK_BLUE)
+    exit_button = Button(80,int(screen_height-30), 60, 20,"Exit",True)
     while running:
         for event in pygame.event.get():          
             if event.type == KEYDOWN:
@@ -129,60 +133,94 @@ def start_game():
                     game_log.add_log("Restart the game")
                     running = False
                     start_game()
-                    
-            elif player1.ackbtn.is_clicked(event):  
-                    play_short_sound(mouse_click)
-                    target =  random.choice(enemys)
-                    game_log.add_log("Player " + player1.name + " attatck " + target.name)                     
-                    start_attack(player1,target,game_log)      
-                    label_surface = turnfont.render("AI Turn", True, RED)                      
-                    aiturn=True                 
+
+            elif player1.ackbtn1.active and player1.ackbtn1.is_clicked(event):
+                    start_attack(player1,enemy1,game_log)
+                    label_surface = turnfont.render(enemy1.name + " Turn", True, RED) 
                     hero =  random.choice(players)
-                    game_log.add_log("AI " + target.name + " attatck " + hero.name)    
-                    start_attack(target,hero,game_log)
-                    
-                    if(target.die):
-                         enemys.remove(target)
-                    if(player1.die):
-                         players.remove(player1)
-                  
+                    start_attack(enemy1,hero,game_log)
+                    aiturn=True
             
-            elif player2.ackbtn.is_clicked(event):
-                    play_short_sound(mouse_click)
-                    target =  random.choice(enemys)
-                    game_log.add_log("Player " + player2.name + " attatck " + target.name)                     
-                    start_attack(player1,target,game_log)                                   
-                    target.draw_health_bar(surface)                    
-                    label_surface = turnfont.render("AI Turn", True, RED)   
-                    aiturn=True    
+            elif player1.ackbtn2.active and player1.ackbtn2.is_clicked(event):
+                    start_attack(player1,enemy2,game_log)
+                    label_surface = turnfont.render(enemy2.name + " Turn", True, RED) 
                     hero =  random.choice(players)
-                    game_log.add_log("AI " + target.name + " attatck " + hero.name)    
-                    start_attack(target,hero,game_log)
-
-                    if(target.die):
-                         enemys.remove(target)
-                    if(player2.die):
-                         players.remove(player2)
-
-            elif player3.ackbtn.is_clicked(event):
-                    play_short_sound(mouse_click)
-                    target =  random.choice(enemys)
-                    game_log.add_log("Player " + player3.name + " attatck " + target.name)                     
-                    start_attack(player1,target,game_log)                                   
-                    target.draw_health_bar(surface)                   
-                    label_surface = turnfont.render("AI Turn", True, RED)
-                    aiturn=True      
+                    start_attack(enemy2,hero,game_log)
+                    aiturn=True
+            
+            elif player1.ackbtn3.active and player1.ackbtn3.is_clicked(event):
+                    start_attack(player1,enemy3,game_log)
+                    label_surface = turnfont.render(enemy3.name + " Turn", True, RED) 
                     hero =  random.choice(players)
-                    game_log.add_log("AI " + target.name + " attatck " + hero.name)    
-                    start_attack(target,hero,game_log)
+                    start_attack(enemy3,hero,game_log)
+                    aiturn=True
+            
+            elif player2.ackbtn1.active and player2.ackbtn1.is_clicked(event):
+                    start_attack(player2,enemy1,game_log)
+                    label_surface = turnfont.render(enemy1.name + " Turn", True, RED) 
+                    hero =  random.choice(players)
+                    start_attack(enemy1,hero,game_log)
+                    aiturn=True
+            
+            elif player2.ackbtn2.active and player2.ackbtn2.is_clicked(event):
+                    start_attack(player2,enemy2,game_log)
+                    label_surface = turnfont.render(enemy2.name + " Turn", True, RED) 
+                    hero =  random.choice(players)
+                    start_attack(enemy2,hero,game_log)
+                    aiturn=True
+            
+            elif player2.ackbtn3.active and player2.ackbtn3.is_clicked(event):
+                    start_attack(player2,enemy3,game_log)
+                    label_surface = turnfont.render(enemy3.name + " Turn", True, RED) 
+                    hero =  random.choice(players)
+                    start_attack(enemy3,hero,game_log)
+                    aiturn=True
 
-                    if(target.die):
-                         enemys.remove(target)
-                    if(player3.die):
-                         players.remove(player3)
+            elif player3.ackbtn1.active and player3.ackbtn1.is_clicked(event):
+                    start_attack(player3,enemy1,game_log)
+                    label_surface = turnfont.render(enemy1.name + " Turn", True, RED) 
+                    hero =  random.choice(players)
+                    start_attack(enemy1,hero,game_log)
+                    aiturn=True
+            
+            elif player3.ackbtn2.active and player3.ackbtn2.is_clicked(event):
+                    start_attack(player3,enemy2,game_log)
+                    label_surface = turnfont.render(enemy2.name + " Turn", True, RED) 
+                    hero =  random.choice(players)
+                    start_attack(enemy2,hero,game_log)
+                    aiturn=True
+            
+            elif player3.ackbtn3.active and player3.ackbtn3.is_clicked(event):
+                    start_attack(player3,enemy3,game_log)
+                    label_surface = turnfont.render(enemy3.name + " Turn", True, RED) 
+                    hero =  random.choice(players)
+                    start_attack(enemy3,hero,game_log)
+                    aiturn=True
 
             elif event.type == pygame.QUIT:
                 running = False
+        
+
+        for enemy in enemys:
+             if(enemy.die):  
+                  game_log.add_log("Enemy die" + enemy.name)            
+                  for player in players:
+                       game_log.add_log("Enemy die" + str(enemy.ai_index))   
+                       if(enemy.ai_index==1):
+                            player.ackbtn1.active=False   
+                            player.ackbtn1.draw(surface)                         
+                       elif(enemy.ai_index==2):
+                            player.ackbtn2.active=False
+                            player.ackbtn2.draw(surface)       
+                       elif(enemy.ai_index==3):
+                            player.ackbtn3.active=False
+                            player.ackbtn3.draw(surface)       
+                        
+                  enemys.remove(enemy)
+
+        for player in players:
+             if(player.die):
+                  players.remove(player)
             
         # Game logic (placeholder for main game content)
         surface.fill(GRAY)  # Blue background as an example
@@ -208,23 +246,27 @@ def start_game():
         restart_button.draw(surface)
         exit_button.draw(surface)
      
-        surface.blit(label_surface, (int(screen_width * 0.5)+20, 100))  # Adjust position as needed  
+        surface.blit(label_surface, (int(screen_width * 0.5)+20, 70))  # Adjust position as needed  
         if(aiturn):
             pygame.time.delay(500) 
             label_surface = turnfont.render("Player Turn", True, BLACK)
            
         if(enemy1.die and enemy2.die and  enemy3.die):
              game_log.add_log("Enemy all RIP ")            
-             surface.blit(font.render("You WIN", True, GREEN),(int(screen_width * 0.5)+20, int(screen_height * 0.5))) 
+             surface.blit(font.render("You WIN", True, LIGHT_GREEN),(int(screen_width * 0.5)+20, int(screen_height * 0.5))) 
              play_short_sound(win)
-             pygame.time.delay(2000) 
+             pygame.display.flip()
+             pygame.time.delay(3000)             
+             running=False
              main()
 
         elif(player1.die and player2.die and player3.die):
               game_log.add_log("Hero all RIP ")           
               surface.blit(font.render("You Lose", True, DARK_RED),(int(screen_width * 0.5)+20, int(screen_height * 0.5)))
               play_short_sound(lose)
-              pygame.time.delay(2000) 
+              pygame.display.flip()
+              pygame.time.delay(3000)
+              running=False
               main()
               
              
@@ -281,4 +323,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
 
