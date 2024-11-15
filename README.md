@@ -36,8 +36,10 @@ Game Structure
 * Turn Logic: The main game loop handles events, updating the screen, and switching between players when an action is completed.
 * Actions: Players can perform different actions such as:
     * Attack: Reduces the opponent's health by a set amount.
-    * Defend: Reduces incoming damage for the next opponent's turn.
-    * Special Move: Powerful action with cooldown or heal
+
+6. This game code is developed as a demonstration for our school group project. You are welcome to reference it for inspiration or educational purposes.
+However, please refrain from directly using the graphics or sound assets in your own projects.
+    
       
 
 
