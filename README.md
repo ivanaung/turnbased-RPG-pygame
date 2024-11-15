@@ -19,6 +19,8 @@ Installation
 4.   pip install pygame
 5.   pip install pygame-menu
 6. Clone this repository or download the project files.
+7. NOTE: for windows users: need to rename all the "GroupProject/" file path to "./" to run the python
+   eg. "GroupProject/menu_bg.png" to "./menu_bg.png"
 
 ![image](https://github.com/user-attachments/assets/b9abcaf6-a84b-49cb-9b89-8840d4740ec5)
 
