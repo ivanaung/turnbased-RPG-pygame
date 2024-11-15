@@ -1,4 +1,5 @@
 Turn-Based Python RPG Battle Game
+![image](https://github.com/user-attachments/assets/a2944342-7caf-461a-a1c5-4bed5dc5939c)
 
 This project is a Turn-Based RPG Battle Game created using Python and the Pygame library. The game simulates a battle between two players (or a player and an AI) in which each participant takes turns to perform actions such as attacking, defending, or using special abilities. This game is designed as a school project to demonstrate programming knowledge in Python, game logic, and Pygame development.
 
@@ -7,6 +8,9 @@ Features
 * Simple Battle Mechanics: Basic actions such as attack, defend, and special moves.
 * Interactive Visuals: Game board and player animations created using Pygame.
 * Score Tracking: Keeps track of health and status to determine the winner.
+
+![image](https://github.com/user-attachments/assets/011da118-2036-46d5-b029-c4de6747283b)
+
   
 Installation
 1. Ensure Python 3.x is installed on your computer.
