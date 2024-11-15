@@ -37,15 +37,15 @@ class Enemy:
     def load_enemy_image(self, enemy_type):
         """Load an image based on the hero type."""
         enemy_tanker ={
-            1 : "GroupProject/enemy/enemy1.png",
-            2 : "GroupProject/enemy/enemy2.png",
-            3 : "GroupProject/enemy/enemy3.png",
+            1 : "./enemy/enemy1.png",
+            2 : "./enemy/enemy2.png",
+            3 : "./enemy/enemy3.png",
 
         }
         enemy_warrior = {          
-            1 : "GroupProject/enemy/enemy4.png",
-            2 : "GroupProject/enemy/enemy5.png",
-            3 : "GroupProject/enemy/enemy6.png",           
+            1 : "./enemy/enemy4.png",
+            2 : "./enemy/enemy5.png",
+            3 : "./enemy/enemy6.png",           
         }
         
         try:
@@ -72,7 +72,7 @@ class Enemy:
             text_name= self.font.render(self.name + " -[" + self.enemy_type_name + "]" , True, (0,0,0))
             screen.blit(text_name, (self.position[0]+2,self.position[1]+self.image.get_height()+15))
             if(self.health<=0):
-                self.image = pygame.image.load("GroupProject/enemy/enemyrip.png")
+                self.image = pygame.image.load("./enemy/enemyrip.png")
                 self.die = True
             else:
                 self.draw_health_bar(screen)

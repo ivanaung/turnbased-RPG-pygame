@@ -7,6 +7,7 @@ from player import *
 from enemy import *
 from button import *
 
+
 pygame.mixer.init()
 pygame.init()
 
@@ -34,14 +35,14 @@ RED = (200, 20, 20)
 DARK_BLUE = (0, 143, 250)
 GREEN = (0,128,128)
 
-intro_music = pygame.mixer.Sound("GroupProject/sound/intro.mp3")
-gameplay_music = pygame.mixer.Sound("GroupProject/sound/game_play.mp3")
-mouse_click = pygame.mixer.Sound("GroupProject/sound/mouseclick.mp3")
-helth_update = pygame.mixer.Sound("GroupProject/sound/update.mp3")
-die = pygame.mixer.Sound("GroupProject/sound/die.wav")
-win = pygame.mixer.Sound("GroupProject/sound/win.wav")
-lose = pygame.mixer.Sound("GroupProject/sound/lose.wav")
-promoted = pygame.mixer.Sound("GroupProject/sound/promoted.mp3")
+intro_music = pygame.mixer.Sound("./sound/intro.mp3")
+gameplay_music = pygame.mixer.Sound("./sound/game_play.mp3")
+mouse_click = pygame.mixer.Sound("./sound/mouseclick.mp3")
+helth_update = pygame.mixer.Sound("./sound/update.mp3")
+die = pygame.mixer.Sound("./sound/die.wav")
+win = pygame.mixer.Sound("./sound/win.wav")
+lose = pygame.mixer.Sound("./sound/lose.wav")
+promoted = pygame.mixer.Sound("./sound/promoted.mp3")
 
 #set the game area
 surface = pygame.display.set_mode((screen_width, screen_height))
@@ -59,10 +60,10 @@ turnfont = pygame.font.SysFont("Times New Roman",25)
 turnfont.set_bold(True)
 
 
-background_image = pygame.image.load('GroupProject/menu_bg.png')
+background_image = pygame.image.load('./menu_bg.png')
 background_image = pygame.transform.scale(background_image,(screen_width,screen_height))
 
-background_fight1 = pygame.image.load('GroupProject/level/level1bg.png')
+background_fight1 = pygame.image.load('./level/level1bg.png')
 background_fight1 = pygame.transform.scale(background_fight1,(int(screen_width * 0.8),screen_height))
 
 def start_attack(attacker,target,game_log):
