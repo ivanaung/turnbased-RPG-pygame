@@ -9,8 +9,8 @@ Features
 * Interactive Visuals: Game board and player animations created using Pygame.
 * Score Tracking: Keeps track of health and status to determine the winner.
 
-![image](https://github.com/user-attachments/assets/011da118-2036-46d5-b029-c4de6747283b)
 
+<img width="905" alt="image" src="https://github.com/user-attachments/assets/7f50be22-3c7c-4040-89ea-356fb2fe1296">
   
 Installation
 1. Ensure Python 3.x is installed on your computer.
