@@ -1,13 +1,13 @@
 import random
 import pygame
-
+from sprite_sheet import SpriteSheet
        
 
 # Colors
 BACKGROUND_COLOR = (255, 255, 255)
 RANK_BAR_COLOR = (200, 20, 0)  # Dark green for the rank bar
 CHEVRON_COLOR = (255, 255, 255)  # White for chevrons
-STAR_COLOR = (255, 255, 255)  # White for stars
+WHITE = (255, 255, 255)  
 OUTLINE_COLOR = (173, 255, 47)  # Light green for the outline  
 GRAY = (200, 200, 200)
 GREEN = (0,255,0)
@@ -24,19 +24,26 @@ class Enemy:
         self.max_health = 100
         self.experience = exp
         self.rank = rank
-        self.enemy_type_name = "Warrior"
+        self.type_name = "Warrior"
         self.atkpoint = 0
         self.defpoint = 0 
         self.die = False
         self.ai_index = index
 
+        imagefile = self.load_enemy_imagePath(enemy_type)
+         # Load sheet
+        self.sprite_sheet = SpriteSheet(imagefile)
+        self.frames = self.sprite_sheet.extract_frames(100,120)
+        self.current_frame = 0
+        self.image = self.frames[self.current_frame]
+
         # Load hero image based on hero type
-        self.image = self.load_enemy_image(enemy_type)
+        #self.image = self.load_enemy_image(enemy_type)
         self.rect = self.image.get_rect(topleft=self.position) if self.image else None
 
     
         
-    def load_enemy_image(self, enemy_type):
+    def load_enemy_imagePath(self, enemy_type):
         """Load an image based on the hero type."""
         enemy_tanker ={
             1 : "GroupProject/enemy/enemy1.png",
@@ -49,23 +56,20 @@ class Enemy:
             2 : "GroupProject/enemy/enemy5.png",
             3 : "GroupProject/enemy/enemy6.png",           
         }
-        
-   
 
         try:
             if(enemy_type==1):   #Tanker 
                 imagefile = enemy_tanker.get(random.randint(1,3), "default.png")
-                self.enemy_type_name = "Tanker"
+                self.type_name = "Tanker"
                 self.atkpoint = random.randint(1,10)    #Set Tanker Attack Point
                 self.defpoint = random.randint(5,15)    #Set Tanker Defence Point
             else:
                 imagefile = enemy_warrior.get(random.randint(1,3), "default.png")
-                self.enemy_type_name = "Warrior"
+                self.type_name = "Warrior"
                 self.atkpoint = random.randint(5,20)    #Set Warrior Attack Point
                 self.defpoint = random.randint(1,10)    #Set Warrior Defence Point
-
-            image = pygame.image.load(imagefile)
-            return pygame.transform.scale(image, (120, 150))  # Resize for display
+           
+            return imagefile
         except pygame.error as e:
             print(f"Error loading image for {enemy_type}: {e}")
             return None
@@ -73,7 +77,7 @@ class Enemy:
     def draw(self, screen):
         """Draw the player and health bar on the screen."""        
         if self.image:
-            text_name= self.font.render(self.name + " -[" + self.enemy_type_name + "]" , True, (0,0,0))
+            text_name= self.font.render(self.name + " [" + self.type_name + "]" , True, (0,0,0))
             screen.blit(text_name, (self.position[0]+2,self.position[1]+self.image.get_height()+15))
             if(self.health<=0):
                 self.image = pygame.image.load("GroupProject/enemy/enemyrip.png")
@@ -81,6 +85,8 @@ class Enemy:
             else:
                 self.draw_health_bar(screen)
                 self.draw_rank_arrow_bar(screen,self.rank)  
+                self.current_frame = (self.current_frame + 1) % len(self.frames)
+                self.image = self.frames[self.current_frame]
             screen.blit(self.image, self.position)   
 
     def draw_health_bar(self, screen):

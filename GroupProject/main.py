@@ -7,12 +7,15 @@ from player import *
 from enemy import *
 from button import *
 
+#for sound and game engin
 pygame.mixer.init()
 pygame.init()
 
+#main game screen
 screen_width = 900
 screen_height = 600
 
+#keyboard shortcut
 from pygame.locals import (
     RLEACCEL,
     K_UP,
@@ -33,16 +36,20 @@ BLUE = (20, 20, 200)
 RED = (200, 20, 20)
 DARK_BLUE = (0, 143, 250)
 GREEN = (10,150,128)
-LIGHT_GREEN =(100,250.150)
+LIGHT_GREEN = (100,255,0)
 
-intro_music = pygame.mixer.Sound("GroupProject/sound/intro.mp3")
-gameplay_music = pygame.mixer.Sound("GroupProject/sound/game_play.mp3")
-mouse_click = pygame.mixer.Sound("GroupProject/sound/mouseclick.mp3")
-helth_update = pygame.mixer.Sound("GroupProject/sound/update.mp3")
-die = pygame.mixer.Sound("GroupProject/sound/die.wav")
-win = pygame.mixer.Sound("GroupProject/sound/win.wav")
-lose = pygame.mixer.Sound("GroupProject/sound/lose.wav")
-promoted = pygame.mixer.Sound("GroupProject/sound/promoted.mp3")
+
+#background music
+intro_music = "GroupProject/sound/intro.mp3"
+gameplay_music = "GroupProject/sound/game_play.mp3"
+
+#sound effect
+mouse_click_sound = pygame.mixer.Sound("GroupProject/sound/mouseclick.mp3")
+attack_sound = pygame.mixer.Sound("GroupProject/sound/update.mp3")
+die_sound = pygame.mixer.Sound("GroupProject/sound/die.wav")
+win_sound = pygame.mixer.Sound("GroupProject/sound/win.wav")
+lose_sound = pygame.mixer.Sound("GroupProject/sound/lose.wav")
+promoted_sound = pygame.mixer.Sound("GroupProject/sound/promoted.mp3")
 
 #set the game area
 surface = pygame.display.set_mode((screen_width, screen_height))
@@ -50,66 +57,82 @@ log_rect = pygame.Rect(0,0,int(screen_width * 0.2),screen_height)
 game_rect = pygame.Rect(int(screen_width * 0.2), 0, screen_width, screen_height)
 game_log = GameLog(surface,int(screen_width * 0.2),screen_height-20,20)
 
+#set fond
 font = pygame.font.SysFont("Times New Roman",40)
 font.set_bold(True)
 font.set_italic(True)
 label = font.render("Level - "+str(game_level), True, (255, 0, 0))  # White color
-#label_rect = label.get_rect(center=(int(screen_width * 0.5), 30))  # Centering the label on the screen
-
 turnfont = pygame.font.SysFont("Times New Roman",25)
 turnfont.set_bold(True)
 
-
+#set backgound image
 background_image = pygame.image.load('GroupProject/menu_bg.png')
 background_image = pygame.transform.scale(background_image,(screen_width,screen_height))
 
 background_fight1 = pygame.image.load('GroupProject/level/level1bg.png')
 background_fight1 = pygame.transform.scale(background_fight1,(int(screen_width * 0.8),screen_height))
 
+#Attack logic (Main game logic)
 def start_attack(attacker,target,game_log):
      #game_log.add_log("Attacker Attack Point :" + str(attacker.atkpoint))
      #game_log.add_log("Target Defence Point :" + str(attacker.defpoint))
+     play_short_sound(attack_sound)       
      game_log.add_log(attacker.name +"  attack to "+ target.name)
      if(target.die==False):
         
-        Damage= (attacker.atkpoint - target.defpoint) + (random.randint(5,10))  #Damage point calculate          
+        Damage= (attacker.atkpoint - target.defpoint) + (random.randint(-5,10))  #Damage point calculate         
        
+        if(Damage>0):
+             target.health -= Damage                                                #Assigned the target HP
+             attacker.experience += Damage                                         #Increase attacker EXP
+             if(target.health<= 0):
+                  play_short_sound(die_sound)    
+        else:
+            Damage=0    
+        
         if(Damage > 10):
-            target.experience += int(target.experience * 1.20)
+            target.experience += int(target.experience * 0.20)
         elif(Damage <= 0):            
-            target.experience += int(target.experience * 1.50)
+            target.experience += int(target.experience * 0.50)
 
         
-        if(Damage>0):
-             target.health -= Damage    
-             play_short_sound(helth_update)                                       #Assigned the target HP
-             if(target.health<= 0):
-                  play_short_sound(die)        
-        
-        attacker.experience += Damage                                         #Increase attacker EXP
         game_log.add_log("Tgt:" + target.name +" |Damage :" + str(Damage) + "|Exp:"+ str(target.experience))
         game_log.add_log("Atk:" + attacker.name +" |Exp:"+ str(attacker.experience))
      
-        if(attacker.experience >100):
+        if(attacker.experience >=100):
             attacker.rank +=1            
             attacker.defpoint +=2                                                   #Increase defence point based on rank
-            attacker.experience = 0
-            play_short_sound(promoted)
+            attacker.atkpoint +=3
+            attacker.experience -= 100
+            play_short_sound(promoted_sound)
             game_log.add_log(attacker.name + " Promoted Rank!")
     
-     
+
+#Game play screen    
 def start_game():
-    play_sound(gameplay_music)
+    play_music(gameplay_music)
+    game_log.add_log("Starting game")
     player1 = Player(name="Hero1", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+100,screen_height-520),rank=0)
+    game_log.add_log(player1.name + "|" + player1.type_name + "|atk:" +str(player1.atkpoint) + "|def:" + str(player1.defpoint))
+
     player2 = Player(name="Hero2", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+50,screen_height-350),rank=0)
+    game_log.add_log(player2.name + "|" + player2.type_name + "|atk:" +str(player2.atkpoint) + "|def:" + str(player2.defpoint))
+
     player3 = Player(name="Hero3", hero_type=random.randint(1,2), position=(int(screen_width * 0.2)+100,screen_height-180),rank=0)
+    game_log.add_log(player3.name + "|" + player3.type_name + "|atk:" +str(player3.atkpoint) + "|def:" + str(player3.defpoint))
 
     ainameArray = []
     ainameArray = generate_enemy_name(3)
     enemy1 = Enemy(1,name=ainameArray[0], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-520),rank=0)
+    game_log.add_log(enemy1.name + "|" + enemy1.type_name + "|atk:" +str(enemy1.atkpoint) + "|def:" + str(enemy1.defpoint))
+    
     enemy2 = Enemy(2,name=ainameArray[1], enemy_type=random.randint(1,2), position=(int(screen_width)-150,screen_height-350),rank=0)
-    enemy3 = Enemy(3,name=ainameArray[2], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-180),rank=0)
+    game_log.add_log(enemy2.name + "|" + enemy2.type_name + "|atk:" +str(enemy2.atkpoint) + "|def:" + str(enemy2.defpoint))
 
+    enemy3 = Enemy(3,name=ainameArray[2], enemy_type=random.randint(1,2), position=(int(screen_width)-200,screen_height-180),rank=0)
+    game_log.add_log(enemy3.name + "|" + enemy3.type_name + "|atk:" +str(enemy3.atkpoint) + "|def:" + str(enemy3.defpoint))
+
+    #Set Array to define player and enemy attack sequence
     enemys = [enemy1,enemy2,enemy3]   
     players = [player1,player2,player3] 
 
@@ -247,14 +270,15 @@ def start_game():
         exit_button.draw(surface)
      
         surface.blit(label_surface, (int(screen_width * 0.5)+20, 70))  # Adjust position as needed  
-        if(aiturn):
-            pygame.time.delay(500) 
+        if(aiturn):            
             label_surface = turnfont.render("Player Turn", True, BLACK)
            
+        #Win/Lose condition checking
         if(enemy1.die and enemy2.die and  enemy3.die):
              game_log.add_log("Enemy all RIP ")            
-             surface.blit(font.render("You WIN", True, LIGHT_GREEN),(int(screen_width * 0.5)+20, int(screen_height * 0.5))) 
-             play_short_sound(win)
+             surface.blit(font.render("You Win", True, LIGHT_GREEN),(int(screen_width * 0.5)+20, int(screen_height * 0.5))) 
+             game_log.add_log("You win Enemy defeated!")
+             play_short_sound(win_sound)
              pygame.display.flip()
              pygame.time.delay(3000)             
              running=False
@@ -263,53 +287,65 @@ def start_game():
         elif(player1.die and player2.die and player3.die):
               game_log.add_log("Hero all RIP ")           
               surface.blit(font.render("You Lose", True, DARK_RED),(int(screen_width * 0.5)+20, int(screen_height * 0.5)))
-              play_short_sound(lose)
+              game_log.add_log("You lose Enemy defeated!")
+              play_short_sound(lose_sound)
               pygame.display.flip()
               pygame.time.delay(3000)
               running=False
               main()
               
-             
-        #draw_button(surface,10,int(screen_height-30), 60, 20, RED, "Exit")
-        pygame.display.flip()
 
-        clock.tick(60)
+        pygame.time.delay(100) #main game delay to animinate smooth      
+        pygame.display.flip()
+        clock.tick(60)          
     pygame.mixer.music.stop()
     pygame.quit()
 
-def play_sound(sound):
-    pygame.mixer.stop()  # Stop any currently playing sound
-    sound.play(loops=-1)
+#sound setting
+sound_on = True
 
-def play_short_sound(sound):
-     sound.play()
+def toggle_sound(value):
+    global sound_on
+    if(sound_on):
+        sound_on = False
+        pygame.mixer.music.stop()
+    else:
+        sound_on = True
+        play_music(intro_music) 
 
-#create menu
+#create game menu 
 menu = pygame_menu.Menu('Welcome', 400, 300,theme= menutheme())
-#menu.set_absolute_position(int(background_image.get_width()//2), 140)
+setting_menu = pygame_menu.Menu('Settings',400,300,theme= menutheme())
+setting_menu.add.toggle_switch('Music:', sound_on,onchange=toggle_sound)
 
 #create menu action
 menu.add.button('Play', start_game)
+menu.add.button('Settings', setting_menu)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
+#sound setting
+def play_music(musicfile):
+    pygame.mixer.stop()  # Stop any currently playing sound
+    if(sound_on):
+       pygame.mixer.music.load(musicfile)
+       pygame.mixer.music.play(-1)          # loop play
+
+def play_short_sound(sound):
+        sound.play()
 
 
-#main function
+
+#main menu function
 def main():   
-    play_sound(intro_music)
+    play_music(intro_music)
     while True:   
         #surface.fill(WHITE)      
-        pygame.draw.rect(surface, GRAY, log_rect)       
-        #game_log.add_log("Player scored 10 points.")
-        #game_log.add_log("Enemy defeated!")
-        #pygame.draw.rect(surface, (0, 100, 255), game_rect) 
+        pygame.draw.rect(surface, GRAY, log_rect) 
         surface.blit(background_image, (0, 0))
-        #surface.blit(background_image,(int(screen_width * 0.2),0))
 
         events = pygame.event.get()
         for event in events:            
-            if event.type == pygame.QUIT:
-                pygame.time.delay(500) 
+            if event.type == pygame.QUIT:        
                 exit()
             game_log.handle_events(event)
 

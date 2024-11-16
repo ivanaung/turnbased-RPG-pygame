@@ -1,12 +1,13 @@
 import random
 import pygame
 from button import Button
+from sprite_sheet import SpriteSheet
 
 # Colors
 BACKGROUND_COLOR = (255, 255, 255)
-RANK_BAR_COLOR = (200, 20, 0)  # Dark green for the rank bar
+RANK_BAR_COLOR = (200, 20, 0)    # Dark green for the rank bar
 CHEVRON_COLOR = (255, 255, 255)  # White for chevrons
-STAR_COLOR = (255, 255, 255)  # White for stars
+WHITE = (255, 255, 255)    
 OUTLINE_COLOR = (173, 255, 47)  # Light green for the outline     
 GRAY = (200, 200, 200)
 GREEN = (0,255,0)
@@ -23,26 +24,31 @@ class Player:
         self.max_health = 100
         self.experience = exp
         self.rank = rank       
-        self.enemy_type_name = "Warrior"
+        self.type_name = "Warrior"
         self.atkpoint = 0
         self.defpoint = 0
         self.die = False
 
+        imagefile = self.load_hero_imagePath(hero_type)
+         # Load sheet
+        self.sprite_sheet = SpriteSheet(imagefile)
+        self.frames = self.sprite_sheet.extract_frames(100,120)
+        self.current_frame = 0
+        self.image = self.frames[self.current_frame]
          # Load hero image based on hero type
-        self.image = self.load_hero_image(hero_type)
+        #self.image = self.load_hero_image(hero_type)
         self.rect = self.image.get_rect(topleft=self.position) if self.image else None
         self.ackbtn1 = Button(position[0] + (self.rect.width -20),position[1]+20,80,20,"Attack AI 1",True)
         self.ackbtn2 = Button(position[0] + (self.rect.width -20),position[1]+50,80,20,"Attack AI 2",True)
         self.ackbtn3 = Button(position[0] + (self.rect.width -20),position[1]+80,80,20,"Attack AI 3",True)
        
 
-    def load_hero_image(self, hero_type):
+    def load_hero_imagePath(self, hero_type):
         """Load an image based on the hero type."""
         hero_tanker ={
             1 : "GroupProject/hero/hero1.png",
             2 : "GroupProject/hero/hero2.png",
             3 : "GroupProject/hero/hero3.png",
-
         }
         hero_warrior = {          
             1 : "GroupProject/hero/hero4.png",
@@ -51,39 +57,39 @@ class Player:
         }
 
         try:
-            if(hero_type==1):   #Tanker 
+            if(hero_type==1):   #Tanker                
                 imagefile = hero_tanker.get(random.randint(1,3), "warrior.png")
-                self.enemy_type_name = "Tanker"
+                self.type_name = "Tanker"
                 self.atkpoint = random.randint(1,10)    #Set Tanker Attack Point
                 self.defpoint = random.randint(5,15)    #Set Tanker Defence Point
             else:
                 imagefile = hero_warrior.get(random.randint(1,3), "warrior.png")
-                self.enemy_type_name = "Warrior"
+                self.type_name = "Warrior"
                 self.atkpoint = random.randint(5,20)    #Set Warrior Attack Point
                 self.defpoint = random.randint(1,10)    #Set Warrior Defence Point
 
-            image = pygame.image.load(imagefile)
-            
-            return pygame.transform.scale(image, (120, 150))  # Resize for display
+            return imagefile
         except pygame.error as e:
             print(f"Error loading image for {hero_type}: {e}")
             return None
 
+
     def draw(self, screen):
         """Draw the player and health bar on the screen."""
         if self.image:                
-            text_name= self.font.render(self.name + " -[" + self.enemy_type_name + "]", True, (0,0,0))
+            text_name= self.font.render(self.name + " [" + self.type_name + "]", True, (0,0,0))
             screen.blit(text_name, (self.position[0]+2,self.position[1]+self.image.get_height()+15))
             if(self.health<=0):
                 self.image = pygame.image.load("GroupProject/hero/herorip.png")
                 self.die = True
-            else:
+            else:                
                 self.draw_health_bar(screen)
                 self.draw_rank_arrow_bar(screen,self.rank)
                 self.ackbtn1.draw(screen)
                 self.ackbtn2.draw(screen)
                 self.ackbtn3.draw(screen)
-
+                self.current_frame = (self.current_frame + 1) % len(self.frames)
+                self.image = self.frames[self.current_frame]
             screen.blit(self.image, self.position)     
 
     def draw_health_bar(self, screen):
