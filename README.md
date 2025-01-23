@@ -16,8 +16,8 @@ Installation
 1. Ensure Python 3.x is installed on your computer.
 2. Install visual code and open folder in VS Code
 3. Install Pygame by running in visual code terminal:
-4.   pip install pygame
-5.   pip install pygame-menu
+4. pip install pygame
+5. pip install pygame-menu
 6. Clone this repository or download the project files.
 7. NOTE: for windows users: need to rename all the "GroupProject/" file path to "./" to run the python
    eg. "GroupProject/menu_bg.png" to "./menu_bg.png"
@@ -27,7 +27,7 @@ Installation
    
 How to Play
 1. Start the Game: Run the main.py script to start the game:
-2.    python main.py
+2. python main.py
      
 4. Game Controls:
     * Usse Mouse to control attack or defence      
